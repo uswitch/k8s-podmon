@@ -16,6 +16,30 @@ exit code and if it has the annotation, will notify via a slack channel.
                              Annotation to watch for
           --slack=SLACK      Slack webhook
 
+To make a pod "monitored", set the annotation with a value of the slack channel you wish to spam.
+
+For example:
+
+    apiVersion: batch/v1
+    kind: Job
+    metadata:
+    name: boom
+    namespace: cloud
+    spec:
+    template:
+    metadata:
+      annotations:
+        com.uswitch.alert/slack: kubernetes
+    spec:
+      containers:
+      - name: hello
+        image: busybox
+        args:
+        - /bin/sh
+        - -c
+        - echo Boom; exit 101
+      restartPolicy: Never
+
 
 ## Building binary
 

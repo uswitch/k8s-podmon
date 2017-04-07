@@ -13,9 +13,20 @@ spec:
       containers:
         - name: podmon
           image: registry.usw.co/cloud/k8s-podmon:latest
+          imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: /etc/ssl/certs
+              name: ssl-certs-host
+              readOnly: true
+          args:
+            - -d
           env:
             - name: SLACK
               valueFrom:
                 secretKeyRef:
                   name: podmon
                   key: slack
+      volumes:
+        - hostPath:
+            path: /usr/share/ca-certificates
+          name: ssl-certs-host

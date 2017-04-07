@@ -19,7 +19,7 @@ func NewClient(kubeconfigPath string) (*k8s.Client, error) {
 		return k8s.NewInClusterClient()
 	}
 
-	log.Debugf("Creating client from kubeconfig")
+	log.Debugf("Creating client from kubecfg")
 	var data []byte
 
 	data, err = ioutil.ReadFile(kubeconfigPath)

@@ -1,0 +1,11 @@
+pipeline:
+  build:
+    image: golang:1.8
+    environment:
+      - GOPATH=/drone
+    commands:
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-X main.buildNumber=1${DRONE_BUILD_NUMBER}" -o k8s-podmon cmd/*.go
+  publish:
+    image: plugins/docker
+    repo: registry.usw.co/cloud/k8s-podmon
+    tags: [ "${DRONE_BUILD_NUMBER}", "latest" ]

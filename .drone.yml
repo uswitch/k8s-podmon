@@ -8,4 +8,4 @@ pipeline:
   publish:
     image: plugins/docker
     repo: registry.usw.co/cloud/k8s-podmon
-    tags: [ "${DRONE_BUILD_NUMBER}", "latest" ]
+    tags: [ "${DRONE_COMMIT_SHA:0:8}", "latest" ]

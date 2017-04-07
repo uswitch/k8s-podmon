@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: podmon
+  namespace: kube-system
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: podmon
+    spec:
+      containers:
+        - name: podmon
+          image: registry.usw.co/cloud/k8s-podmon:latest
+          env:
+            - name: SLACK
+              valueFrom:
+                secretKeyRef:
+                  name: podmon
+                  key: slack

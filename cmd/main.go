@@ -16,7 +16,7 @@ var (
 	kubecfg    = kingpin.Flag("kubecfg", "Location of kubeconfig, blank for In-Cluster").String()
 	namespace  = kingpin.Flag("namespace", "Namespace to follow").Default(k8s.AllNamespaces).String()
 	annotation = kingpin.Flag("annotation", "Annotation to watch for").Default("com.uswitch.alert/slack").String()
-	slack      = kingpin.Flag("slack", "Slack webhook").Required().String()
+	slack      = kingpin.Flag("slack", "Slack webhook").Envar("SLACK").Required().String()
 )
 
 func main() {

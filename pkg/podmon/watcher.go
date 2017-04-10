@@ -45,6 +45,7 @@ func Watch(ctx *context.Context, c *k8s.Client, namespace, annotation string, al
 		evt, pod, err := wp.Next()
 		if err != nil {
 			log.Warnf("Error getting event: %s", err)
+			continue
 		}
 
 		if *evt.Type == "MODIFIED" && HasKeyPrefix(&pod.Metadata.Annotations, annotation) {

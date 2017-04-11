@@ -36,16 +36,15 @@ func Watch(ctx *context.Context, c *k8s.Client, namespace, annotation string, al
 		log.Infof("Setting up watch on: %s", namespace)
 	}
 
-	wp, err := c.CoreV1().WatchPods(*ctx, namespace)
-	if err != nil {
-		log.Fatalf("Error getting watch: %s", err)
-	}
+	wp := getWatch(ctx, c, &namespace)
+	defer wp.Close()
 
 	for {
 		evt, pod, err := wp.Next()
 		if err != nil {
-			log.Warnf("Error getting event: %s", err)
-			continue
+			log.Warnf("Got an error from watch, restarting watch: %s", err)
+			wp.Close()
+			wp = getWatch(ctx, c, &namespace)
 		}
 
 		if *evt.Type == "MODIFIED" && HasKeyPrefix(&pod.Metadata.Annotations, annotation) {
@@ -67,4 +66,12 @@ func Watch(ctx *context.Context, c *k8s.Client, namespace, annotation string, al
 			}
 		}
 	}
+}
+
+func getWatch(ctx *context.Context, c *k8s.Client, namespace *string) *k8s.CoreV1PodWatcher {
+	wp, err := c.CoreV1().WatchPods(*ctx, *namespace)
+	if err != nil {
+		log.Fatalf("Error getting watch: %s", err)
+	}
+	return wp
 }

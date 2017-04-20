@@ -45,6 +45,7 @@ func Watch(ctx *context.Context, c *k8s.Client, namespace, annotation string, al
 			log.Warnf("Got an error from watch, restarting watch: %s", err)
 			wp.Close()
 			wp = getWatch(ctx, c, &namespace)
+			continue
 		}
 
 		if *evt.Type == "MODIFIED" && HasKeyPrefix(&pod.Metadata.Annotations, annotation) {

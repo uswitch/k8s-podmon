@@ -1,11 +1,23 @@
 pipeline:
   build:
+    when:
+      event: push
     image: golang:1.8
     environment:
       - GOPATH=/drone
     commands:
       - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-X main.buildNumber=${DRONE_BUILD_NUMBER}" -o k8s-podmon cmd/*.go
   publish:
+    when:
+      event: push
     image: plugins/docker
     repo: registry.usw.co/cloud/k8s-podmon
-    tags: [ "${DRONE_COMMIT_SHA:0:8}", "latest" ]
+    tags: [ "${DRONE_COMMIT_SHA}", "latest" ]
+
+  deployment:
+    when:
+      event: deployment
+    image: registry.usw.co/drone/deployment:latest
+    kubernetes:
+      template: kubernetes.yaml
+      namespace: kube-system

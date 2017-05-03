@@ -40,6 +40,7 @@ func (s *SNSEndpoint) EventLoop(ctx context.Context, wg *sync.WaitGroup, c chan 
 		case <-ctx.Done():
 			break
 		case msg := <-c:
+			log.Debugf("Sending the following to SNS: %#v", msg)
 			resp, err := s.Send(msg)
 			if err != nil {
 				log.Errorf("SNS error: %s", err)

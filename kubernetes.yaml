@@ -9,6 +9,8 @@ spec:
     metadata:
       labels:
         app: podmon
+      annotations:
+        iam.amazonaws.com/role: kubernetes_podmon
     spec:
       containers:
         - name: podmon

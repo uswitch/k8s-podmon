@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/ericchiang/k8s"
+	k8s "github.com/ericchiang/k8s"
 )
 
 // Alert stuct is the message that will be passed when a failure is detected
@@ -31,9 +31,9 @@ func HasKeyPrefix(m *map[string]string, k string) bool {
 // Watch a namespace for events
 func Watch(ctx *context.Context, c *k8s.Client, namespace, annotation string, alertChan chan Alert) {
 	if namespace == k8s.AllNamespaces {
-		log.Infoln("Setting up watch on all namespaces")
+		log.Infof("Setting up watch on all namespaces for %s", annotation)
 	} else {
-		log.Infof("Setting up watch on: %s", namespace)
+		log.Infof("Setting up watch on %s for %s", namespace, annotation)
 	}
 
 	wp := getWatch(ctx, c, &namespace)

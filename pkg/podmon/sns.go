@@ -24,11 +24,10 @@ type SNSMessage struct {
 }
 
 // NewSNSEndpoint returns an SNS publisher
-func NewSNSEndpoint() *SNSEndpoint {
-	sess := session.Must(
-		session.NewSessionWithOptions(session.Options{
-			SharedConfigState: session.SharedConfigEnable,
-		}))
+func NewSNSEndpoint(region *string) *SNSEndpoint {
+	sess := session.Must(session.NewSession(&aws.Config{
+		Region: aws.String(*region),
+	}))
 	return &SNSEndpoint{sns.New(sess)}
 }
 

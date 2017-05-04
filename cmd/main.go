@@ -20,6 +20,7 @@ var (
 	namespace      = kingpin.Flag("namespace", "Namespace to follow").Default(k8s.AllNamespaces).String()
 	baseAnnotation = kingpin.Flag("annotation", "Base Annotation to watch for").Default("com.uswitch.alert").String()
 	slack          = kingpin.Flag("slack", "Slack webhook").Envar("SLACK").Required().String()
+	awsRegion      = kingpin.Flag("aws-region", "AWS Region").Envar("AWS_REGION").Default("eu-west-1").String()
 )
 
 func main() {
@@ -56,7 +57,7 @@ func main() {
 
 	// Fire off SNS publisher
 	snsChan := make(chan podmon.SNSMessage, 5)
-	snsEP := podmon.NewSNSEndpoint()
+	snsEP := podmon.NewSNSEndpoint(awsRegion)
 	go snsEP.EventLoop(ctx, &wg, snsChan)
 	wg.Add(1)
 

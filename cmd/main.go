@@ -16,8 +16,8 @@ import (
 
 var (
 	debug          = kingpin.Flag("debug", "Debug output").Short('d').Bool()
-	kubecfg        = kingpin.Flag("kubecfg", "Location of kubeconfig, blank for In-Cluster").String()
-	namespace      = kingpin.Flag("namespace", "Namespace to follow").Default(k8s.AllNamespaces).String()
+	kubecfg        = kingpin.Flag("kubecfg", "Location of kubeconfig, omit for In-Cluster").String()
+	namespace      = kingpin.Flag("namespace", "Namespace to follow, omit for all").Default(k8s.AllNamespaces).String()
 	baseAnnotation = kingpin.Flag("annotation", "Base Annotation to watch for").Default("com.uswitch.alert").String()
 	slack          = kingpin.Flag("slack", "Slack webhook").Envar("SLACK").Required().String()
 	awsRegion      = kingpin.Flag("aws-region", "AWS Region").Envar("AWS_REGION").Default("eu-west-1").String()

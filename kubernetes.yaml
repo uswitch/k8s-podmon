@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: podmon
-          image: registry.usw.co/cloud/k8s-podmon:latest
+          image: registry.usw.co/cloud/k8s-podmon:{{ .Env.DRONE_COMMIT }}
           imagePullPolicy: Always
           volumeMounts:
             - mountPath: /etc/ssl/certs

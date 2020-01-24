@@ -1,34 +1,58 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
+  creationTimestamp: null
+  labels:
+    app: podmon
   name: podmon
   namespace: kube-system
 spec:
+  progressDeadlineSeconds: 2147483647
   replicas: 1
+  revisionHistoryLimit: 2147483647
+  selector:
+    matchLabels:
+      app: podmon
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
   template:
     metadata:
-      labels:
-        app: podmon
       annotations:
         iam.amazonaws.com/role: kubernetes_podmon
+      creationTimestamp: null
+      labels:
+        app: podmon
     spec:
       containers:
-        - name: podmon
-          image: registry.usw.co/cloud/k8s-podmon:{{ .Env.DRONE_COMMIT }}
-          imagePullPolicy: Always
-          volumeMounts:
-            - mountPath: /etc/ssl/certs
-              name: ssl-certs-host
-              readOnly: true
-          args:
-            - -d
-          env:
-            - name: SLACK
-              valueFrom:
-                secretKeyRef:
-                  name: podmon
-                  key: slack
-      volumes:
-        - hostPath:
-            path: /usr/share/ca-certificates
+      - args:
+        - -d
+        env:
+        - name: SLACK
+          valueFrom:
+            secretKeyRef:
+              key: slack
+              name: podmon
+        image: registry.usw.co/cloud/k8s-podmon:{{ .Env.DRONE_COMMIT }}
+        imagePullPolicy: Always
+        name: podmon
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /etc/ssl/certs
           name: ssl-certs-host
+          readOnly: true
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - hostPath:
+          path: /usr/share/ca-certificates
+          type: ""
+        name: ssl-certs-host
+status: {}
